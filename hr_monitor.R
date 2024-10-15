@@ -116,54 +116,95 @@ print(p_hist)
 
 
 # Assuming the first time stamp in the log dataframe (Time column)
-first_timestamp <- log$Time[1]
+first_timestamp = log$Time[1]
 
 # Calculate statistics for Pulse Rate (rounded to 1 decimal place)
-pulse_min <- round(min(log$`Pulse Rate`, na.rm = TRUE), 1)
-pulse_max <- round(max(log$`Pulse Rate`, na.rm = TRUE), 1)
-pulse_mean <- round(mean(log$`Pulse Rate`, na.rm = TRUE), 1)
+pulse_min = round(min(log$`Pulse Rate`, na.rm = TRUE), 1)
+pulse_max = round(max(log$`Pulse Rate`, na.rm = TRUE), 1)
+pulse_mean = round(mean(log$`Pulse Rate`, na.rm = TRUE), 1)
 
 # Calculate statistics for Oxygen Level (rounded to 1 decimal place)
-oxygen_min <- round(min(log$`Oxygen Level`, na.rm = TRUE), 1)
-oxygen_max <- round(max(log$`Oxygen Level`, na.rm = TRUE), 1)
-oxygen_mean <- round(mean(log$`Oxygen Level`, na.rm = TRUE), 1)
+oxygen_min = round(min(log$`Oxygen Level`, na.rm = TRUE), 1)
+oxygen_max = round(max(log$`Oxygen Level`, na.rm = TRUE), 1)
+oxygen_mean = round(mean(log$`Oxygen Level`, na.rm = TRUE), 1)
 
 # Convert time_range to a more readable format (minutes)
-time_elapsed <- round(as.numeric(time_range, units = "mins"), 1)
+time_elapsed = round(as.numeric(time_range, units = "mins"), 1)
 
 # Open a PDF device with A4 dimensions (in inches: 8.27 x 11.69 for A4)
 pdf("report.pdf", width = 8.27, height = 11.69)  # A4 dimensions
 
 # Create a grob (graphical object) for the filepath text
-filepath_grob <- textGrob(filepath, gp = gpar(fontsize = 12, fontface = "bold"), just = "center")
+filepath_grob = textGrob(filepath,
+                         gp = gpar(fontsize = 12, fontface = "bold"),
+                         just = "center")
 
 # Create a grob for the time stamp text (converting to string if necessary)
-timestamp_grob <- textGrob(paste("Time of first entry:", first_timestamp), gp = gpar(fontsize = 10), just = "center")
+timestamp_grob = textGrob(
+  paste("Time of first entry:", first_timestamp),
+  gp = gpar(fontsize = 10),
+  just = "center"
+)
 
 # Create grobs for Pulse Rate and Oxygen Level statistics, and elapsed time
-pulse_stats_grob <- textGrob(paste("Pulse Rate - Min:", pulse_min, "Max:", pulse_max, "Mean:", pulse_mean),
-                             gp = gpar(fontsize = 10), just = "left", x = unit(0, "npc"))
-oxygen_stats_grob <- textGrob(paste("Oxygen Level - Min:", oxygen_min, "Max:", oxygen_max, "Mean:", oxygen_mean),
-                              gp = gpar(fontsize = 10), just = "left", x = unit(0, "npc"))
-time_elapsed_grob <- textGrob(paste("Time Elapsed:", time_elapsed, "minutes"),
-                              gp = gpar(fontsize = 10), just = "left", x = unit(0, "npc"))
+pulse_stats_grob = textGrob(
+  paste(
+    "Pulse Rate - Min:",
+    pulse_min,
+    "Max:",
+    pulse_max,
+    "Mean:",
+    pulse_mean
+  ),
+  gp = gpar(fontsize = 10),
+  just = "left",
+  x = unit(0, "npc")
+)
+oxygen_stats_grob = textGrob(
+  paste(
+    "Oxygen Level - Min:",
+    oxygen_min,
+    "Max:",
+    oxygen_max,
+    "Mean:",
+    oxygen_mean
+  ),
+  gp = gpar(fontsize = 10),
+  just = "left",
+  x = unit(0, "npc")
+)
+time_elapsed_grob = textGrob(
+  paste("Time Elapsed:", time_elapsed, "minutes"),
+  gp = gpar(fontsize = 10),
+  just = "left",
+  x = unit(0, "npc")
+)
 
 # Arrange the elements in the layout
-arranged_grobs <- arrangeGrob(
-  filepath_grob,            # File path at the top
-  timestamp_grob,           # Time stamp on the next line
-  p_lines,                  # First plot (line plot)
-  p_hist,                   # Second plot (histogram)
-  pulse_stats_grob,         # Pulse Rate stats
-  oxygen_stats_grob,        # Oxygen Level stats
-  time_elapsed_grob,        # Time elapsed
-  nrow = 7,                 # Use 7 rows for the layout
+arranged_grobs = arrangeGrob(
+  filepath_grob,
+  # File path at the top
+  timestamp_grob,
+  # Time stamp on the next line
+  p_lines,
+  # First plot (line plot)
+  p_hist,
+  # Second plot (histogram)
+  pulse_stats_grob,
+  # Pulse Rate stats
+  oxygen_stats_grob,
+  # Oxygen Level stats
+  time_elapsed_grob,
+  # Time elapsed
+  nrow = 7,
+  # Use 7 rows for the layout
   heights = c(0.1, 0.05, 0.4, 0.4, 0.05, 0.05, 0.05)  # Allocate relative heights
 )
 
 # Create a grob that adds margins around the arranged content
 # Use `unit()` to specify the top, right, bottom, and left margins
-margins_grob <- gTree(children = gList(arranged_grobs), vp = viewport(width = 0.85, height = 0.85))
+margins_grob = gTree(children = gList(arranged_grobs),
+                     vp = viewport(width = 0.85, height = 0.85))
 
 # Draw the arranged grobs with margins on the PDF
 grid.draw(margins_grob)

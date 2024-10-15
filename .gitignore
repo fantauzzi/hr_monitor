@@ -1,5 +1,7 @@
 # Source: https://github.com/github/gitignore/blob/main/R.gitignore
 
+report.pdf
+
 # History files
 .Rhistory
 .Rapp.history
